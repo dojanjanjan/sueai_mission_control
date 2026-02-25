@@ -27,20 +27,22 @@ export default function Home() {
       case 'overview':
         return (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left Column */}
+            {/* Left Column - Business Focus */}
             <div className="lg:col-span-2 space-y-6">
-              <AIPulse />
-              <HealthStatus />
-              <SystemHealth />
+              <BusinessData />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Appointments />
+                <Tasks />
+              </div>
+              <FileHub />
               <MissionBoard />
             </div>
             
-            {/* Right Column */}
+            {/* Right Column - Context & Quick Info */}
             <div className="space-y-6">
               <Local />
-              <SkillInventory />
-              <NeuralActivity />
-              <SmartControls />
+              <AIPulse />
+              <SystemHealth />
             </div>
           </div>
         );
