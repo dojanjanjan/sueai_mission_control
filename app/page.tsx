@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import PasswordProtection from '@/components/PasswordProtection';
 import Header from '@/components/Header';
 import Navigation, { TabType } from '@/components/Navigation';
 import HealthStatus from '@/components/HealthStatus';
@@ -104,14 +105,16 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-black pb-20 md:pb-6">
-      <div className="container mx-auto px-4 py-6 max-w-7xl">
-        <Header />
-        <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
-        {renderContent()}
-      </div>
-      
-      <MobileNav activeTab={activeTab} onTabChange={setActiveTab} />
-    </main>
+    <PasswordProtection>
+      <main className="min-h-screen bg-black pb-20 md:pb-6">
+        <div className="container mx-auto px-4 py-6 max-w-7xl">
+          <Header />
+          <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
+          {renderContent()}
+        </div>
+        
+        <MobileNav activeTab={activeTab} onTabChange={setActiveTab} />
+      </main>
+    </PasswordProtection>
   );
 }
