@@ -17,6 +17,10 @@ import Tasks from '@/components/Tasks';
 import FileHub from '@/components/FileHub';
 import Sleep from '@/components/Sleep';
 import FoodTracker from '@/components/FoodTracker';
+import PredictionHero from '@/components/PredictionHero';
+import BIInsights from '@/components/BIInsights';
+import NeuralActivityBI from '@/components/NeuralActivityBI';
+import DataSourceStatus from '@/components/DataSourceStatus';
 import MobileNav from '@/components/MobileNav';
 
 export default function Home() {
@@ -26,23 +30,26 @@ export default function Home() {
     switch (activeTab) {
       case 'overview':
         return (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left Column - Business Focus */}
-            <div className="lg:col-span-2 space-y-6">
-              <BusinessData />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Appointments />
-                <Tasks />
+          <div className="space-y-6">
+            <PredictionHero />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Left Column - Business Focus */}
+              <div className="lg:col-span-2 space-y-6">
+                <BusinessData />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Appointments />
+                  <Tasks />
+                </div>
+                <FileHub />
+                <MissionBoard />
               </div>
-              <FileHub />
-              <MissionBoard />
-            </div>
-            
-            {/* Right Column - Context & Quick Info */}
-            <div className="space-y-6">
-              <Local />
-              <AIPulse />
-              <SystemHealth />
+              
+              {/* Right Column - Context & Quick Info */}
+              <div className="space-y-6">
+                <Local />
+                <AIPulse />
+                <SystemHealth />
+              </div>
             </div>
           </div>
         );
@@ -61,11 +68,24 @@ export default function Home() {
       
       case 'business':
         return (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <BusinessData />
-            <Appointments />
-            <Tasks />
-            <FileHub />
+          <div className="space-y-6">
+            <PredictionHero />
+            <BIInsights />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-6">
+                <BusinessData />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Appointments />
+                  <Tasks />
+                </div>
+                <FileHub />
+                <NeuralActivityBI />
+              </div>
+              <div className="space-y-6">
+                <DataSourceStatus />
+                <MissionBoard />
+              </div>
+            </div>
           </div>
         );
       
