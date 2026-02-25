@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { forecastData72h, forecastData1Week, forecastData1Month } from '@/lib/forecastData';
 import { TrendingUp, AlertTriangle } from 'lucide-react';
+import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const statusColors = {
   optimal: 'bg-emerald-green/20 text-emerald-green border-emerald-green/50',
@@ -41,6 +42,20 @@ export default function PredictionHero() {
   const forecastData = getForecastData();
   const isCompactView = activeTab !== '72h';
 
+  // Prepare chart data
+  const chartData = forecastData.map((day) => {
+    const date = new Date(day.date);
+    return {
+      date: date.toLocaleDateString('de-DE', { day: 'numeric', month: 'short' }),
+      revenue: day.projectedRevenue,
+      staffing: day.staffingRecommendation.count,
+      hasWarning: day.hasWarning,
+    };
+  });
+
+  const maxRevenue = Math.max(...chartData.map(d => d.revenue));
+  const minRevenue = Math.min(...chartData.map(d => d.revenue));
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -73,6 +88,136 @@ export default function PredictionHero() {
             {tab === '72h' ? '72h' : tab === '1week' ? '1 Week' : '1 Month'}
           </button>
         ))}
+      </div>
+
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        {/* Revenue Trend Chart */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="glass rounded-xl p-4"
+        >
+          <h3 className="text-sm font-semibold mb-3 text-white/80">Umsatz-Trend</h3>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData}>
+                <defs>
+                  <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#00D9FF" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#00D9FF" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" />
+                <XAxis
+                  dataKey="date"
+                  tick={{ fill: 'rgba(255, 255, 255, 0.6)', fontSize: 10 }}
+                  axisLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
+                  tickLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
+                />
+                <YAxis
+                  tick={{ fill: 'rgba(255, 255, 255, 0.6)', fontSize: 10 }}
+                  axisLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
+                  tickLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
+                  domain={[minRevenue * 0.8, maxRevenue * 1.1]}
+                  tickFormatter={(value) => `€${(value / 1000).toFixed(0)}k`}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '8px',
+                    color: '#fff',
+                  }}
+                  labelStyle={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                  formatter={(value: number) => [`€${(value / 1000).toFixed(1)}k`, 'Umsatz']}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="revenue"
+                  stroke="#00D9FF"
+                  strokeWidth={2}
+                  fill="url(#revenueGradient)"
+                  dot={(props: any) => {
+                    const { payload } = props;
+                    return (
+                      <circle
+                        cx={props.cx}
+                        cy={props.cy}
+                        r={payload.hasWarning ? 6 : 4}
+                        fill={payload.hasWarning ? '#EF4444' : '#00D9FF'}
+                        stroke={payload.hasWarning ? '#EF4444' : 'none'}
+                        strokeWidth={payload.hasWarning ? 2 : 0}
+                      />
+                    );
+                  }}
+                  activeDot={{ r: 8 }}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </motion.div>
+
+        {/* Staffing Trend Chart */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="glass rounded-xl p-4"
+        >
+          <h3 className="text-sm font-semibold mb-3 text-white/80">Staffing-Trend</h3>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" />
+                <XAxis
+                  dataKey="date"
+                  tick={{ fill: 'rgba(255, 255, 255, 0.6)', fontSize: 10 }}
+                  axisLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
+                  tickLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
+                />
+                <YAxis
+                  tick={{ fill: 'rgba(255, 255, 255, 0.6)', fontSize: 10 }}
+                  axisLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
+                  tickLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
+                  domain={[0, 7]}
+                  tickFormatter={(value) => `${value} MA`}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '8px',
+                    color: '#fff',
+                  }}
+                  labelStyle={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                  formatter={(value: number) => [`${value} MA`, 'Staffing']}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="staffing"
+                  stroke="#8B5CF6"
+                  strokeWidth={2}
+                  dot={(props: any) => {
+                    const { payload } = props;
+                    return (
+                      <circle
+                        cx={props.cx}
+                        cy={props.cy}
+                        r={payload.hasWarning ? 6 : 4}
+                        fill={payload.hasWarning ? '#EF4444' : '#8B5CF6'}
+                        stroke={payload.hasWarning ? '#EF4444' : 'none'}
+                        strokeWidth={payload.hasWarning ? 2 : 0}
+                      />
+                    );
+                  }}
+                  activeDot={{ r: 8 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </motion.div>
       </div>
 
       {/* Forecast Grid */}
