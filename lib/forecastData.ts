@@ -80,6 +80,63 @@ export const forecastData: ForecastDay[] = [
   },
 ];
 
+// Helper function to generate forecast data
+function generateForecastDays(startDate: string, days: number): ForecastDay[] {
+  const weathers: Array<'sunny' | 'rainy' | 'stormy' | 'cloudy'> = ['sunny', 'rainy', 'cloudy', 'stormy'];
+  const weatherIcons = ['☀️', '🌧️', '☁️', '⛈️'];
+  const daysArray: ForecastDay[] = [];
+  
+  for (let i = 0; i < days; i++) {
+    const date = new Date(startDate);
+    date.setDate(date.getDate() + i);
+    const weatherIndex = Math.floor(Math.random() * weathers.length);
+    const weather = weathers[weatherIndex];
+    const weatherIcon = weatherIcons[weatherIndex];
+    
+    // Revenue varies by weather
+    let baseRevenue = 12000;
+    if (weather === 'sunny') baseRevenue = 14000 + Math.random() * 2000;
+    else if (weather === 'rainy') baseRevenue = 8000 + Math.random() * 3000;
+    else if (weather === 'stormy') baseRevenue = 6000 + Math.random() * 2000;
+    else baseRevenue = 10000 + Math.random() * 3000;
+    
+    // Staffing recommendation based on revenue
+    let staffingCount = 4;
+    let status: 'optimal' | 'warning' | 'on-call' = 'optimal';
+    if (baseRevenue > 13000) {
+      staffingCount = 5;
+      status = 'optimal';
+    } else if (baseRevenue < 9000) {
+      staffingCount = 6;
+      status = 'warning';
+    } else if (baseRevenue < 11000) {
+      staffingCount = 3;
+      status = 'on-call';
+    }
+    
+    daysArray.push({
+      date: date.toISOString().split('T')[0],
+      weather,
+      weatherIcon,
+      projectedRevenue: Math.round(baseRevenue),
+      staffingRecommendation: {
+        count: staffingCount,
+        status,
+        label: `${staffingCount} MA - ${status === 'optimal' ? 'Optimal' : status === 'warning' ? 'WARNING' : 'On Call'}`,
+      },
+      hasWarning: status === 'warning' || baseRevenue < 8000,
+    });
+  }
+  
+  return daysArray;
+}
+
+export const forecastData72h = forecastData;
+
+export const forecastData1Week = generateForecastDays('2026-02-25', 7);
+
+export const forecastData1Month = generateForecastDays('2026-02-25', 30);
+
 export const weatherImpactData: WeatherImpact[] = [
   {
     weather: 'sunny',

@@ -17,7 +17,7 @@ export default function Header() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold mb-2">
-            {greeting}, <span className="text-gradient">Tung</span>
+            {greeting}, <span className="text-gradient">Grande Beach</span>
           </h1>
           <p className="text-white/60 text-sm md:text-base">{currentDate}</p>
         </div>
