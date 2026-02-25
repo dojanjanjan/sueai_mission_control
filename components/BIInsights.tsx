@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { weatherImpactData, efficiencyMetric } from '@/lib/forecastData';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid } from 'recharts';
 import { TrendingUp, Users } from 'lucide-react';
 
 const weatherColors = {
@@ -39,6 +39,7 @@ export default function BIInsights() {
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={weatherImpactData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" />
               <XAxis
                 dataKey="weather"
                 tick={{ fill: 'rgba(255, 255, 255, 0.6)', fontSize: 12 }}
@@ -49,7 +50,6 @@ export default function BIInsights() {
                 tick={{ fill: 'rgba(255, 255, 255, 0.6)', fontSize: 12 }}
                 axisLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
                 tickLine={{ stroke: 'rgba(255, 255, 255, 0.1)' }}
-                grid={{ stroke: 'rgba(255, 255, 255, 0.05)' }}
               />
               <Tooltip
                 contentStyle={{
