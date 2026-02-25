@@ -1,17 +1,22 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Home, Puzzle, Settings } from 'lucide-react';
-import { useState } from 'react';
+import { Home, Cpu, Briefcase, User } from 'lucide-react';
+import { TabType } from './Navigation';
 
 const navItems = [
-  { id: 'home', label: 'Home', icon: Home },
-  { id: 'skills', label: 'Skills', icon: Puzzle },
-  { id: 'settings', label: 'Settings', icon: Settings },
+  { id: 'overview' as TabType, label: 'Overview', icon: Home },
+  { id: 'system' as TabType, label: 'System', icon: Cpu },
+  { id: 'business' as TabType, label: 'Business', icon: Briefcase },
+  { id: 'private' as TabType, label: 'Privat', icon: User },
 ];
 
-export default function MobileNav() {
-  const [activeTab, setActiveTab] = useState('home');
+interface MobileNavProps {
+  activeTab: TabType;
+  onTabChange: (tab: TabType) => void;
+}
+
+export default function MobileNav({ activeTab, onTabChange }: MobileNavProps) {
 
   return (
     <motion.nav
@@ -27,7 +32,7 @@ export default function MobileNav() {
           return (
             <button
               key={item.id}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => onTabChange(item.id)}
               className="flex flex-col items-center justify-center gap-1 flex-1 h-full relative"
             >
               {isActive && (
